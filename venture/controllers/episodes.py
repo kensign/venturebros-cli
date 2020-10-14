@@ -44,10 +44,10 @@ class Episodes(Controller):
         title = self.app.pargs.title
         duration = self.app.pargs.duration
         self.app.log.info('Adding episode: %s to season %s' % (episode, season))
+        repo = self.app.ep_repo
+        show = repo.get_show_dict(season, episode, title, duration)
 
-        show = self.get_show_dict(season, episode, title, duration)
-
-        self.insertShow(show)
+        repo.insert_show(show)
 
 
 

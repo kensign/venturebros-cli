@@ -21,8 +21,8 @@ venture:
 ### The output handler label
 # output_handler: jinja2
 
-### sample foo option
-# foo: bar
+### The csv file containing the episode catalogue
+# episode_source_file: './data/vb.csv'
 
 ### Database file path
 # db_file: ~/.venture/db.json

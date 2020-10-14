@@ -15,13 +15,11 @@ class EpisodeRepository:
     def init_tinydb(self):
         self.logger.info('extending application with tinydb')
         db_file = self.config.get('venture', 'db_file')
-
-        # ensure that we expand the full path
         db_file = fs.abspath(db_file)
-        self.logger.info('tinydb database file is: %s' % db_file)
 
-        # ensure our parent directory exists
+        self.logger.info('tinydb database file is: %s' % db_file)
         db_dir = os.path.dirname(db_file)
+
         if not os.path.exists(db_dir):
             os.makedirs(db_dir)
 
@@ -39,10 +37,9 @@ class EpisodeRepository:
                 episode = show[1]
                 duration = row[1]
                 title = row[2]
-                print('season: {0}, episode: {1}, duration: {3} - {2}'.format(season, episode, title, duration))
-                Episodes = Query()
                 show = self.get_show_dict(season, episode, title, duration)
-                self.insertShow(show)
+                self.insert_show(show)
+                print('season: {0}, episode: {1}, duration: {3} - {2}'.format(season, episode, title, duration))
 
     def get_show_dict(self, season, episode, title, duration):
         return {
@@ -52,9 +49,9 @@ class EpisodeRepository:
             'duration': duration,
         }
 
-    def insertShow(self, show):
+    def insert_show(self, show):
         self.db.insert(show)
 
-    def getShow(self, show):
+    def get_show(self, show):
         Episode = Query()
         return self.db.search((Episode.season == show.season) | (Episode.episode == show.episode))
