@@ -1,5 +1,3 @@
-import csv
-
 from cement import Controller, ex
 
 
@@ -43,12 +41,10 @@ class Episodes(Controller):
         episode = self.app.pargs.episode
         title = self.app.pargs.title
         duration = self.app.pargs.duration
+
         self.app.log.info('Adding episode: %s to season %s' % (episode, season))
+
         repo = self.app.ep_repo
         show = repo.get_show_dict(season, episode, title, duration)
 
         repo.insert_show(show)
-
-
-
-

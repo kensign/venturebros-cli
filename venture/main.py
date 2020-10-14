@@ -1,6 +1,3 @@
-import csv
-import os
-
 from cement import App, TestApp, init_defaults
 from cement.core.exc import CaughtSignal
 
@@ -15,10 +12,9 @@ CONFIG['venture']['db_file'] = '~/.venture/db.json'
 CONFIG['venture']['episode_source_file'] = './data/vb.csv'
 
 
-
 def initialise_episode_repository(app):
-    # app.episode_repository = EpisodeRepository(app)
     app.extend('ep_repo', EpisodeRepository(app))
+
 
 class venture(App):
     """Venture Bros Stream Service primary application."""
