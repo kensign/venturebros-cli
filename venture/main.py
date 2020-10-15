@@ -9,7 +9,7 @@ from .core.exc import ventureError
 # configuration defaults
 CONFIG = init_defaults('venture')
 CONFIG['venture']['db_file'] = '~/.venture/db.json'
-CONFIG['venture']['episode_source_file'] = './data/vb.csv'
+CONFIG['venture']['episode_source_file'] = './venture/data/vb.csv'
 
 
 def initialise_episode_repository(app):

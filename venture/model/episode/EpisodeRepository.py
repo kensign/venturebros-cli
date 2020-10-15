@@ -10,7 +10,6 @@ class EpisodeRepository:
         self.logger = app.log
         self.config = app.config
         self.init_tinydb()
-        self.initialise_episode_repository()
 
     def init_tinydb(self):
         self.logger.info('extending application with tinydb')
@@ -24,10 +23,10 @@ class EpisodeRepository:
             os.makedirs(db_dir)
 
         self.db = TinyDB(db_file)
-        self.db.truncate()
 
     def initialise_episode_repository(self):
         self.logger.info('initialising episode repository')
+        self.db.truncate()
         vb_csv = self.config.get('venture', 'episode_source_file')
         with open(fs.abspath(vb_csv), newline='') as f:
             reader = csv.reader(f)
@@ -47,11 +46,26 @@ class EpisodeRepository:
             'episode': episode,
             'title': title,
             'duration': duration,
+            'start_time': "",
         }
 
     def insert_show(self, show):
-        self.db.insert(show)
+        show_table = self.db.table('shows')
+        show_table.insert(show)
 
-    def get_show(self, show):
-        Episode = Query()
-        return self.db.search((Episode.season == show.season) | (Episode.episode == show.episode))
+    def get_show_by_id(self, show):
+        Show = Query()
+        show_table = self.db.table('shows')
+
+        return show_table.get((Show.season == show['season']) & (Show.episode == show['episode']))
+
+    def synchronise(self, id, start_time):
+        Show = Query()
+        season = id.split('-')[0]
+        episode = id.split('-')[1]
+
+        show_table = self.db.table('shows')
+
+        id = show_table.update({'start_time': start_time}, (Show.season == season) & (Show.episode == episode))
+
+        self.logger.info(self.get_show_by_id({'season': season, 'episode': episode}))
