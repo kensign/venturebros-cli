@@ -69,12 +69,12 @@ class Episodes(Controller):
               'action': 'store',
               'dest': 'id'}),
             (['--time'],
-             {'help': 'timestap that marks the beginning of the related episode. Format: DD/MM/YYYY HH:MM:SS',
+             {'help': 'ISO timestamp that marks the beginning of the related episode. Ex: 2020-10-15T22:55:02.291090',
               'action': 'store',
               'dest': 'start_time'}),
 
             (['--now'],
-             {'help': 'use the current local time as a the timestamp for the show\'s start time',
+             {'help': 'use the current local time as the ISO timestamp for the show\'s start time',
               'action': 'store',
               'dest': 'now'})
         ],

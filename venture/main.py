@@ -1,7 +1,7 @@
 from cement import App, TestApp, init_defaults
 from cement.core.exc import CaughtSignal
 
-from venture.model.episode.EpisodeRepository import EpisodeRepository
+from venture.model.episode.episode_repository import EpisodeRepository
 from .controllers.base import Base
 from .controllers.episodes import Episodes
 from .core.exc import ventureError
@@ -10,6 +10,7 @@ from .core.exc import ventureError
 CONFIG = init_defaults('venture')
 CONFIG['venture']['db_file'] = '~/.venture/db.json'
 CONFIG['venture']['episode_source_file'] = './venture/data/vb.csv'
+CONFIG['venture']['intermission_length_minutes'] = 0.5
 
 
 def initialise_episode_repository(app):
@@ -21,7 +22,6 @@ class venture(App):
 
     class Meta:
         hooks = [
-
             ('post_setup', initialise_episode_repository),
         ]
 
