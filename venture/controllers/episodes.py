@@ -58,6 +58,12 @@ class Episodes(Controller):
 
             return
 
+        if season != None and episode != None:
+            id = season + "-" + episode
+            show = repo.get_show_by_id(id)
+            print(show)
+
+
         # self.app.log.info('searching for season %s, episode %s' % (season, episode))
 
         # get all episodes in a season
@@ -131,6 +137,7 @@ class Episodes(Controller):
         ],
     )
     def schedule(self):
+        self.app.ep_repo.get_air_times_table().truncate()
         self.app.ep_calendar.build_schedule(self.app.pargs.days)
 
 
