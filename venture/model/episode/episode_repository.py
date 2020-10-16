@@ -57,28 +57,30 @@ class EpisodeRepository:
         }
 
     def set_airtime(self, id, air_time):
-        Stream = Query()
         table = self.get_air_times_table()
-        table.insert({'air_time': air_time, 'ep_id': id})
+        table.insert({'air_time': air_time, 'id': id})
+
+    def get_airtime(self, id):
+        Q = Query()
+        table = self.get_air_times_table()
+        return table.get(Q.id == id)
 
     def insert_show(self, show):
-        show_table = self.get_shows_table()
-        show_table.insert(show)
+        table = self.get_shows_table()
+        table.insert(show)
 
     def get_show_by_id(self, id):
-        Show = Query()
-        show_table = self.get_shows_table()
-        show = self.get_show_dict(id=id)
-        return show_table.get(Show.id == id)
+        Q = Query()
+        table = self.get_shows_table()
+        return table.get(Q.id == id)
 
     def get_upcoming_schedule(self):
-        Stream = Query()
         table = self.get_air_times_table()
         return table.all()
 
     def get_all_shows(self):
-        show_table = self.get_shows_table()
-        shows = show_table.all()
+        table = self.get_shows_table()
+        shows = table.all()
         return sorted(shows, key=lambda i: (i['season'], i['episode']))
 
     def get_shows_table(self):

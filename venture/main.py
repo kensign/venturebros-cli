@@ -11,9 +11,9 @@ from .core.exc import ventureError
 CONFIG = init_defaults('venture')
 CONFIG['venture']['db_file'] = '~/.venture/db.json'
 CONFIG['venture']['episode_source_file'] = './venture/data/vb.csv'
-CONFIG['venture']['intermission_length_minutes'] = 0.5
-CONFIG['venture']['schedule_seed_date'] = '2020-10-17T04:18:08.714697'
-CONFIG['venture']['schedule_seed_episode'] = '4-9'
+CONFIG['venture']['intermission_length_seconds'] = 45
+CONFIG['venture']['schedule_seed_date'] = '2020-10-17T05:06:02.714697'
+CONFIG['venture']['schedule_seed_episode'] = '4-12'
 CONFIG['venture']['debug'] = True
 
 

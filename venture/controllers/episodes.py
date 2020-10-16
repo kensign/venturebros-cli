@@ -50,7 +50,7 @@ class Episodes(Controller):
         # show = repo.get_show_dict(season, episode, title, duration)
         # self.app.log.debug(show_all, 'show_all')
 
-        #self.app.log.info(repo.get_show_by_id(show))
+        # self.app.log.info(repo.get_show_by_id(show))
         if show_all == 'true':
             shows = repo.get_all_shows()
             for show in shows:
@@ -62,7 +62,6 @@ class Episodes(Controller):
             id = season + "-" + episode
             show = repo.get_show_by_id(id)
             print(show)
-
 
         # self.app.log.info('searching for season %s, episode %s' % (season, episode))
 
@@ -116,7 +115,9 @@ class Episodes(Controller):
         if self.app.pargs.now == 'true':
             start_time = datetime.datetime.now().isoformat()
 
+        self.app.ep_repo.get_air_times_table().truncate()
         self.app.ep_repo.set_airtime(id, start_time)
+        print(self.app.ep_repo.get_airtime(id))
 
     @ex(help=('initialise db'))
     def load(self):
@@ -124,9 +125,9 @@ class Episodes(Controller):
         repo.initialise_episode_repository()
 
     @ex(
-        help=('get stream schedule'),
+        help=('Set stream schedule. The schedule can be based on an existing airtime record for an episode'),
         arguments=[
-            (['--lead'],
+            (['--id'],
              {'help': 'Identifier for the season and episode from which to schedule should be based on. Ex: 5-4',
               'action': 'store',
               'dest': 'id'}),
@@ -137,10 +138,10 @@ class Episodes(Controller):
         ],
     )
     def schedule(self):
-        self.app.ep_repo.get_air_times_table().truncate()
-        self.app.ep_calendar.build_schedule(self.app.pargs.days)
+        if self.app.pargs.id == None:
+            self.app.ep_repo.get_air_times_table().truncate()
 
-
+        self.app.ep_calendar.build_schedule(self.app.pargs.days, self.app.pargs.id)
 
     # self.app.log.info('start index:', start_index)
 
