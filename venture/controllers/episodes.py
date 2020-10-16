@@ -30,7 +30,13 @@ class Episodes(Controller):
                 'help': 'Runtime in minutes',
                 'action': 'store',
                 'dest': 'duration'
+            }),
+            (['--all'], {
+                'help': 'All episodes, ordered by season, episode',
+                'action': 'store',
+                'dest': 'show_all'
             })
+
         ],
     )
     def list(self):
@@ -38,12 +44,29 @@ class Episodes(Controller):
         episode = self.app.pargs.episode
         title = self.app.pargs.title
         duration = self.app.pargs.duration
-        self.app.log.info('searching for season %s, episode %s' % (season, episode))
-        repo = self.app.ep_repo
-        show = repo.get_show_dict(season, episode, title, duration)
-        # self.app.log.info(show)
+        show_all = self.app.pargs.show_all
 
-        self.app.log.info(repo.get_show_by_id(show))
+        repo = self.app.ep_repo
+        # show = repo.get_show_dict(season, episode, title, duration)
+        # self.app.log.debug(show_all, 'show_all')
+
+        #self.app.log.info(repo.get_show_by_id(show))
+        if show_all == 'true':
+            shows = repo.get_all_shows()
+            for show in shows:
+                print(show)
+
+            return
+
+        # self.app.log.info('searching for season %s, episode %s' % (season, episode))
+
+        # get all episodes in a season
+
+        # search the title
+
+        # get all episode numbers
+
+        # search by duration
 
     @ex(help=('reports the currently streaming episode'))
     def now(self):
@@ -53,7 +76,7 @@ class Episodes(Controller):
     def next(self):
         pass
 
-    @ex(help=('reports the previous episide in the que'))
+    @ex(help=('reports the previous episide in the queue'))
     def last(self):
         pass
 
@@ -87,9 +110,40 @@ class Episodes(Controller):
         if self.app.pargs.now == 'true':
             start_time = datetime.datetime.now().isoformat()
 
-        self.app.ep_repo.synchronise(id, start_time)
+        self.app.ep_repo.set_airtime(id, start_time)
 
     @ex(help=('initialise db'))
     def load(self):
         repo = self.app.ep_repo
         repo.initialise_episode_repository()
+
+    @ex(
+        help=('get stream schedule'),
+        arguments=[
+            (['--lead'],
+             {'help': 'Identifier for the season and episode from which to schedule should be based on. Ex: 5-4',
+              'action': 'store',
+              'dest': 'id'}),
+            (['--days'],
+             {'help': 'The number of days to build the schedule for. ',
+              'action': 'store',
+              'dest': 'days'}),
+        ],
+    )
+    def schedule(self):
+        self.app.ep_calendar.build_schedule(self.app.pargs.days)
+
+
+
+    # self.app.log.info('start index:', start_index)
+
+    # @ex(
+    #     help=(''),
+    #     arguments=[
+    #         ([''],
+    #          {'':'',
+    #           '':'',
+    #           '':''}),
+    #     ],
+    # )
+    # def (self):

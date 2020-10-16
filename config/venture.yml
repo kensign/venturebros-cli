@@ -1,0 +1,61 @@
+### Venture Bros Stream Service Configuration Settings
+---
+
+venture:
+
+  ### Toggle application level debug (does not toggle framework debugging)
+  debug: True
+
+### Where external (third-party) plugins are loaded from
+# plugin_dir: /var/lib/venture/plugins/
+
+### Where all plugin configurations are loaded from
+# plugin_config_dir: /etc/venture/plugins.d/
+
+### Where external templates are loaded from
+# template_dir: /var/lib/venture/templates/
+
+### The log handler label
+# log_handler: colorlog
+
+### The output handler label
+# output_handler: jinja2
+
+### The csv file containing the episode catalogue
+# episode_source_file: './data/vb.csv'
+
+### Database file path
+# db_file: ~/.venture/db.json
+
+### Episode CSV file path
+# episode_source_file: './venture/data/vb.csv'
+
+### Intermission length in minutes
+# intermission_length_minutes: 0.5
+
+### Date that seeds the stream schedule prediction , ISO format
+# schedule_seed_date = '2020-10-15T22:58:58.714697'
+
+## Episode that started on the schedule_seed_data. format: [season]-[episode]
+# 5-4
+
+
+log.colorlog:
+
+### Where the log file lives (no log file by default)
+# file: null
+
+### The level for which to log.  One of: info, warning, error, fatal, debug
+# level: info
+
+### Whether or not to log to console
+# to_console: true
+
+### Whether or not to rotate the log file when it reaches `max_bytes`
+# rotate: false
+
+### Max size in bytes that a log file can grow until it is rotated.
+# max_bytes: 512000
+
+### The maximun number of log files to maintain when rotating
+# max_files: 4

@@ -1,6 +1,7 @@
 from cement import App, TestApp, init_defaults
 from cement.core.exc import CaughtSignal
 
+from venture.model.episode.episode_calendar import EpisodeCalendar
 from venture.model.episode.episode_repository import EpisodeRepository
 from .controllers.base import Base
 from .controllers.episodes import Episodes
@@ -11,10 +12,18 @@ CONFIG = init_defaults('venture')
 CONFIG['venture']['db_file'] = '~/.venture/db.json'
 CONFIG['venture']['episode_source_file'] = './venture/data/vb.csv'
 CONFIG['venture']['intermission_length_minutes'] = 0.5
+CONFIG['venture']['schedule_seed_date'] = '2020-10-15T22:58:58.714697'
+CONFIG['venture']['schedule_seed_episode'] = '5-4'
+CONFIG['venture']['debug'] = True
 
 
-def initialise_episode_repository(app):
+# handlers for hooks, build dependencies, do DI
+def inject_episode_repository(app):
     app.extend('ep_repo', EpisodeRepository(app))
+
+
+def inject_calendar(app):
+    app.extend('ep_calendar', EpisodeCalendar(app))
 
 
 class venture(App):
@@ -22,7 +31,8 @@ class venture(App):
 
     class Meta:
         hooks = [
-            ('post_setup', initialise_episode_repository),
+            ('post_setup', inject_episode_repository),
+            ('post_setup', inject_calendar)
         ]
 
         label = 'venture'
