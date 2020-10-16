@@ -1,6 +1,7 @@
 import dateutil.parser
 from dateutil.relativedelta import *
 
+
 class EpisodeCalendar():
     def __init__(self, app):
         self.logger = app.log
@@ -27,14 +28,26 @@ class EpisodeCalendar():
                         ep = repo.get_show_by_id(seed_episode)
                         start_episode = ep
 
+                    # initially, start the calculation after the seed episode
                     if start_episode != None:
                         if show['season'] == start_episode['season']:
                             if show['episode'] > start_episode['episode']:
                                 current_start_time = current_start_time + relativedelta(minutes=+show['duration'])
+                                current_start_time = current_start_time + relativedelta(seconds=+30)
                                 repo.set_airtime(show['id'], current_start_time.isoformat())
 
+                        # set air times for the remaining shows before the stream starts over
+                        if show['season'] > start_episode['season']:
+                            current_start_time = current_start_time + relativedelta(minutes=+show['duration'])
+                            current_start_time = current_start_time + relativedelta(seconds=+30)
+                            repo.set_airtime(show['id'], current_start_time.isoformat())
+
+            # stream has started over, continue with populating the schedule
             if i > 0:
-                pass
+                for show in shows:
+                    current_start_time = current_start_time + relativedelta(minutes=+show['duration'])
+                    current_start_time = current_start_time + relativedelta(seconds=+30)
+                    repo.set_airtime(show['id'], current_start_time.isoformat())
 
         print(repo.get_upcoming_schedule())
 

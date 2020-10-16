@@ -59,7 +59,7 @@ class EpisodeRepository:
     def set_airtime(self, id, air_time):
         Stream = Query()
         table = self.get_air_times_table()
-        table.upsert({'air_time': air_time, 'ep_id': id}, Stream.ep_id == id)
+        table.insert({'air_time': air_time, 'ep_id': id})
 
     def insert_show(self, show):
         show_table = self.get_shows_table()
