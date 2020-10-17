@@ -43,7 +43,18 @@ class EpisodeRepository:
                                                                                       id))
 
     def get_show_dict(self, season="", episode="", title="", duration=0, id=""):
+        """
 
+        Args:
+            season:
+            episode:
+            title:
+            duration:
+            id:
+
+        Returns:
+
+        """
         if len(id):
             season = id.split('-')[0]
             episode = id.split('-')[1]
@@ -57,39 +68,102 @@ class EpisodeRepository:
         }
 
     def set_airtime(self, id, air_time):
+        """
+
+        Args:
+            id:
+            air_time:
+
+        Returns:
+
+        """
         table = self.get_air_times_table()
         table.insert({'air_time': air_time, 'id': id})
 
     def get_airtime(self, id):
+        """
+
+        Args:
+            id:
+
+        Returns:
+
+        """
         Q = Query()
         table = self.get_air_times_table()
         return table.get(Q.id == id)
 
     def insert_show(self, show):
+        """
+
+        Args:
+            show:
+
+        Returns:
+
+        """
         table = self.get_shows_table()
         table.insert(show)
 
     def get_show_by_id(self, id):
+        """
+
+        Args:
+            id:
+
+        Returns:
+
+        """
         Q = Query()
         table = self.get_shows_table()
         return table.get(Q.id == id)
 
     def get_upcoming_schedule(self):
+        """
+
+        Returns:
+
+        """
         table = self.get_air_times_table()
         return table.all()
 
+    def get_episodes_by_season(self, season):
+        Q = Query()
+        table = self.get_shows_table()
+        return table.search(Q.season == season)
+
     def get_all_shows(self):
+        """
+
+        Returns:
+
+        """
         table = self.get_shows_table()
         shows = table.all()
         return sorted(shows, key=lambda i: (i['season'], i['episode']))
 
     def get_shows_table(self):
+        """
+
+        Returns:
+
+        """
         return self.db.table('shows')
 
     def get_air_times_table(self):
+        """
+
+        Returns:
+
+        """
         return self.db.table('air_times')
 
     def clear_tables(self):
+        """
+
+        Returns:
+
+        """
         shows = self.get_shows_table()
         air_times = self.get_air_times_table()
 

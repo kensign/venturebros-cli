@@ -4,6 +4,7 @@ from dateutil.relativedelta import *
 
 class CalendarService():
     """Service for airtime schedule and calendar operations"""
+
     def __init__(self, app):
         self.logger = app.log
         self.config = app.config
@@ -11,9 +12,19 @@ class CalendarService():
         # self.build_schedule(5)
 
     def build_schedule(self, number_of_days, id=None):
+        """
+        Given a number of days alone, the schedule will be generated from the values set in the config
+        If a seed air time has been set with the sync command, that show can be used as the starting point
+        for the generated schedule.
+        Args:
+            number_of_days: the number of days to project the schedule for, this is approximate
+            id: the [season]-[episode] value which represents a unique id for an episode.
+
+        Returns:
+
+        """
 
         repo = self.ep_repo
-        intermission_length = self.config.get('venture', 'intermission_length_seconds')
         start_episode = None
         shows = repo.get_all_shows()
 
@@ -24,7 +35,6 @@ class CalendarService():
             seed_id = id
             seed_episode = repo.get_airtime(seed_id)
             seed_date = seed_episode['air_time']
-
 
         current_start_time = dateutil.parser.parse(seed_date)
 
@@ -55,6 +65,16 @@ class CalendarService():
         print(repo.get_upcoming_schedule())
 
     def save_air_time(self, current_start_time, show):
+        """
+        Saves an air time for an episode and calculates the timestamp got the next episodes air time
+        based on the current show's duration and the intermission time from the config.
+        Args:
+            current_start_time: timestamp for the air time
+            show: the dictionary for the show being saved
+
+        Returns: The start time for the next episode.
+
+        """
         repo = self.ep_repo
         intermission_length = self.config.get('venture', 'intermission_length_seconds')
         repo.set_airtime(show['id'], current_start_time.isoformat())
@@ -62,9 +82,11 @@ class CalendarService():
         next_start_time = next_start_time + relativedelta(minutes=+show['duration'])
         return next_start_time
 
-    def seed_calendar(self, id, start_time):
-        season = id.split('-')[0]
-        episode = id.split('-')[1]
-
     def reset(self):
-        pass
+        """
+        Resets the data for the show schedule
+        Returns:
+
+        """
+        self.ep_repo.get_air_times_table.truncate()
+        print('air times have been cleared')

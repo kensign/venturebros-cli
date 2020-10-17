@@ -40,6 +40,11 @@ class Episodes(Controller):
         ],
     )
     def list(self):
+        """
+
+        Returns:
+
+        """
         season = self.app.pargs.season
         episode = self.app.pargs.episode
         title = self.app.pargs.title
@@ -59,13 +64,20 @@ class Episodes(Controller):
             return
 
         if season != None and episode != None:
+            self.app.log.info('searching for season %s, episode %s' % (season, episode))
             id = season + "-" + episode
             show = repo.get_show_by_id(id)
             print(show)
-
-        # self.app.log.info('searching for season %s, episode %s' % (season, episode))
+            return
 
         # get all episodes in a season
+        if season != None and episode == None:
+            shows = repo.get_episodes_by_season(int(season))
+
+            for show in shows:
+                print(show)
+
+            return
 
         # search the title
 
@@ -109,6 +121,11 @@ class Episodes(Controller):
 
     )
     def sync(self):
+        """
+
+        Returns:
+
+        """
         id = self.app.pargs.id
         start_time = self.app.pargs.start_time
 
@@ -138,6 +155,11 @@ class Episodes(Controller):
         ],
     )
     def schedule(self):
+        """
+
+        Returns:
+
+        """
         if self.app.pargs.id == None:
             self.app.ep_repo.get_air_times_table().truncate()
 
