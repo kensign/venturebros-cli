@@ -2,7 +2,7 @@ import dateutil.parser
 from dateutil.relativedelta import *
 
 
-class CalendarService():
+class CalendarService:
     """Service for airtime schedule and calendar operations"""
 
     def __init__(self, app):
@@ -11,14 +11,14 @@ class CalendarService():
         self.ep_repo = app.ep_repo
         # self.build_schedule(5)
 
-    def build_schedule(self, number_of_days, id=None):
+    def build_schedule(self, number_of_days, ep_id=None):
         """
         Given a number of days alone, the schedule will be generated from the values set in the config
         If a seed air time has been set with the sync command, that show can be used as the starting point
         for the generated schedule.
         Args:
             number_of_days: the number of days to project the schedule for, this is approximate
-            id: the [season]-[episode] value which represents a unique id for an episode.
+            ep_id: the [season]-[episode] value which represents a unique id for an episode.
 
         Returns:
 
@@ -31,8 +31,8 @@ class CalendarService():
         seed_date = self.config.get('venture', 'schedule_seed_date')
         seed_id = self.config.get('venture', 'schedule_seed_episode')
 
-        if (id != None):
-            seed_id = id
+        if ep_id is not None:
+            seed_id = ep_id
             seed_episode = repo.get_airtime(seed_id)
             seed_date = seed_episode['air_time']
 
@@ -48,7 +48,7 @@ class CalendarService():
                         current_start_time = self.save_air_time(current_start_time, show)
 
                     # continue with the calculation after the seed episode
-                    if start_episode != None:
+                    if start_episode is not None:
                         if show['season'] == start_episode['season']:
                             if show['episode'] > start_episode['episode']:
                                 current_start_time = self.save_air_time(current_start_time, show)
