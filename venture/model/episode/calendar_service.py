@@ -1,6 +1,6 @@
 from datetime import datetime
-
 import dateutil.parser
+import dateutil.tz
 from dateutil.relativedelta import *
 
 
@@ -11,6 +11,10 @@ class CalendarService:
         self.logger = app.log
         self.config = app.config
         self.ep_repo = app.ep_repo
+        self.nztz = dateutil.tz.gettz('Pacific/Auckland')
+        self.pdt = dateutil.tz.gettz('US/Pacific')
+        self.est = dateutil.tz.gettz('US/Eastern')
+
         # self.build_schedule(5)
 
     def build_schedule(self, number_of_days, ep_id=None):
@@ -38,6 +42,7 @@ class CalendarService:
             seed_date = seed_episode['air_time']
 
         current_start_time = dateutil.parser.parse(seed_date)
+
         start_episode = repo.get_show_by_id(seed_id)
 
         # iterate to the seed episode and continue the loop for the number of times specified
@@ -100,6 +105,9 @@ class CalendarService:
 
             if now > air_time and now < end_time:
                 print(episode)
-                print("started on:" + air_time.isoformat())
+                air_time.replace(tzinfo=self.nztz)
+                print("air time (NZST): " + air_time.isoformat())
+                print('PDT: ' + air_time.astimezone(self.pdt).isoformat())
+                print('EST: ' + air_time.astimezone(self.est).isoformat())
 
             # print(air_time)
