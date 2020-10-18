@@ -6,12 +6,25 @@ from tinydb import TinyDB, Query
 
 
 class EpisodeRepository:
+    """
+    Persistence operations for episodes and airtimes
+    """
     def __init__(self, app):
+        """
+        Constructor, sets logger and config and initialises the db.
+        Args:
+            app:
+        """
         self.logger = app.log
         self.config = app.config
-        self.init_tinydb()
+        self.db = self.init_tinydb()
 
     def init_tinydb(self):
+        """
+        Initialises TinyDB.
+        Returns:
+
+        """
         self.logger.info('extending application with tinydb')
         db_file = self.config.get('venture', 'db_file')
         db_file = fs.abspath(db_file)
@@ -22,27 +35,33 @@ class EpisodeRepository:
         if not os.path.exists(db_dir):
             os.makedirs(db_dir)
 
-        self.db = TinyDB(db_file)
+        return TinyDB(db_file)
 
     def initialise_episode_repository(self):
+        """
+        Loads the episodes from CSV data into TinyDB
+        Returns:
+
+        """
         self.logger.info('initialising episode repository')
         self.clear_tables()
         vb_csv = self.config.get('venture', 'episode_source_file')
         with open(fs.abspath(vb_csv), newline='') as f:
             reader = csv.reader(f)
             for row in reader:
-                id = row[0]
+                ep_id = row[0]
                 show = row[0].split('-')
                 season = show[0]
                 episode = show[1]
-                duration = row[1]
+                duration = int(row[1])
                 title = row[2]
-                show = self.get_show_dict(season, episode, title, duration, id)
+                show = EpisodeRepository.get_show_dict(season, episode, title, duration, ep_id)
                 self.insert_show(show)
                 print('id:{4}, season: {0}, episode: {1}, duration: {3} - {2}'.format(season, episode, title, duration,
-                                                                                      id))
+                                                                                      ep_id))
 
-    def get_show_dict(self, season="", episode="", title="", duration=0, id=""):
+    @staticmethod
+    def get_show_dict(season="", episode="", title="", duration=0, ep_id=""):
         """
 
         Args:
@@ -50,48 +69,48 @@ class EpisodeRepository:
             episode:
             title:
             duration:
-            id:
+            ep_id:
 
         Returns:
 
         """
-        if len(id):
-            season = id.split('-')[0]
-            episode = id.split('-')[1]
+        if len(ep_id):
+            season = ep_id.split('-')[0]
+            episode = ep_id.split('-')[1]
 
         return {
-            'id': id,
+            'ep_id': ep_id,
             'season': int(season),
             'episode': int(episode),
             'title': title,
             'duration': int(duration),
         }
 
-    def set_airtime(self, id, air_time):
+    def set_airtime(self, ep_id, air_time):
         """
 
         Args:
-            id:
+            ep_id:
             air_time:
 
         Returns:
 
         """
         table = self.get_air_times_table()
-        table.insert({'air_time': air_time, 'id': id})
+        table.insert({'air_time': air_time, 'id': ep_id})
 
-    def get_airtime(self, id):
+    def get_airtime(self, ep_id):
         """
 
         Args:
-            id:
+            ep_id:
 
         Returns:
 
         """
-        Q = Query()
+        q = Query()
         table = self.get_air_times_table()
-        return table.get(Q.id == id)
+        return table.get(q.id == ep_id)
 
     def insert_show(self, show):
         """
@@ -105,18 +124,18 @@ class EpisodeRepository:
         table = self.get_shows_table()
         table.insert(show)
 
-    def get_show_by_id(self, id):
+    def get_show_by_id(self, ep_id):
         """
 
         Args:
-            id:
+            ep_id:
 
         Returns:
 
         """
-        Q = Query()
+        q = Query()
         table = self.get_shows_table()
-        return table.get(Q.id == id)
+        return table.get(q.id == ep_id)
 
     def get_upcoming_schedule(self):
         """
@@ -128,9 +147,9 @@ class EpisodeRepository:
         return table.all()
 
     def get_episodes_by_season(self, season):
-        Q = Query()
+        q = Query()
         table = self.get_shows_table()
-        return table.search(Q.season == season)
+        return table.search(q.season == season)
 
     def get_all_shows(self):
         """

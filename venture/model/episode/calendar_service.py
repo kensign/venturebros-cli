@@ -25,7 +25,6 @@ class CalendarService:
         """
 
         repo = self.ep_repo
-        start_episode = None
         shows = repo.get_all_shows()
 
         seed_date = self.config.get('venture', 'schedule_seed_date')
@@ -37,36 +36,35 @@ class CalendarService:
             seed_date = seed_episode['air_time']
 
         current_start_time = dateutil.parser.parse(seed_date)
+        start_episode = repo.get_show_by_id(seed_id)
 
         # iterate to the seed episode and continue the loop for the number of times specified
         for i in range(0, int(number_of_days)):
             if i == 0:
                 for show in shows:
+                    # save the air_time for the seed episode
                     if show['id'] == seed_id:
-                        # save the air_time for the seed episode
-                        start_episode = repo.get_show_by_id(seed_id)
                         current_start_time = self.save_air_time(current_start_time, show)
 
-                    # continue with the calculation after the seed episode
-                    if start_episode is not None:
-                        if show['season'] == start_episode['season']:
-                            if show['episode'] > start_episode['episode']:
-                                current_start_time = self.save_air_time(current_start_time, show)
-
-                        # set air times for the remaining shows before the stream starts over
-                        if show['season'] > start_episode['season']:
+                    # continue with the calculation for the seed's season after the seed episode
+                    if show['season'] == start_episode['season']:
+                        if show['episode'] > start_episode['episode']:
                             current_start_time = self.save_air_time(current_start_time, show)
+
+                    # set air times for the remaining seasons before the stream starts over
+                    if show['season'] > start_episode['season']:
+                        current_start_time = self.save_air_time(current_start_time, show)
 
             # stream has started over, continue with populating the schedule
             if i > 0:
                 for show in shows:
                     current_start_time = self.save_air_time(current_start_time, show)
 
-        print(repo.get_upcoming_schedule())
+        # print(repo.get_upcoming_schedule())
 
     def save_air_time(self, current_start_time, show):
         """
-        Saves an air time for an episode and calculates the timestamp got the next episodes air time
+        Saves an air time for an episode and calculates the timestamp for the next episode's air time
         based on the current show's duration and the intermission time from the config.
         Args:
             current_start_time: timestamp for the air time

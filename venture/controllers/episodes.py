@@ -41,7 +41,7 @@ class Episodes(Controller):
     )
     def list(self):
         """
-
+        Lists the episode catalogue
         Returns:
 
         """
@@ -79,7 +79,7 @@ class Episodes(Controller):
 
             return
 
-        # search the title
+        # search by the title
 
         # get all episode numbers
 
@@ -122,7 +122,7 @@ class Episodes(Controller):
     )
     def sync(self):
         """
-
+        Syncs the calendar with the provided episode.
         Returns:
 
         """
@@ -134,6 +134,7 @@ class Episodes(Controller):
 
         self.app.ep_repo.get_air_times_table().truncate()
         self.app.ep_repo.set_airtime(id, start_time)
+        self.app.ep_calendar.build_schedule(7, id)
         print(self.app.ep_repo.get_airtime(id))
 
     @ex(help=('initialise db'))
