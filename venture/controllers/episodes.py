@@ -87,7 +87,7 @@ class Episodes(Controller):
     @ex(help=('reports the currently streaming episode'))
     def now(self):
         print('current episode')
-        self.app.ep_calendar.get_current_episode()
+        self.app.ep_calendar.view_current_episode()
 
     @ex(help=('reports the episode up next in the streaming queue'))
     def next(self):
@@ -97,9 +97,18 @@ class Episodes(Controller):
     def last(self):
         print('previous episode')
 
-    @ex(help=('reports what episode will be playing at a given day and time'))
+    @ex(
+        help=('reports when an give episode will be playing at a given day and time'),
+        arguments=[
+            (['--id'],
+             {'help': 'The unique identifier for the episode synchronisation. Ex: 7-1, (season 7 episode 1)',
+              'action': 'store',
+              'dest': 'id'})
+        ],
+    )
     def when(self):
-        print('when a given show will air')
+        print('Scheduled air times')
+        self.app.ep_calendar.view_episode_air_times(self.app.pargs.id)
 
     @ex(
         help=('Provide an episode id and time to synchronise the application with the AS stream'),
@@ -132,9 +141,9 @@ class Episodes(Controller):
             start_time = datetime.datetime.now().isoformat()
 
         self.app.ep_calendar.reset()
-        self.app.ep_repo.set_airtime(id, start_time)
+        self.app.ep_repo.set_air_time(id, start_time)
         self.app.ep_calendar.build_schedule(7, id)
-        print(self.app.ep_repo.get_airtime(id))
+        print(self.app.ep_repo.get_air_time(id))
 
     @ex(help=('initialise db'))
     def load(self):

@@ -9,6 +9,7 @@ class EpisodeRepository:
     """
     Persistence operations for episodes and airtimes
     """
+
     def __init__(self, app):
         """
         Constructor, sets logger and config and initialises the db.
@@ -86,7 +87,7 @@ class EpisodeRepository:
             'duration': int(duration),
         }
 
-    def set_airtime(self, ep_id, air_time):
+    def set_air_time(self, ep_id, air_time):
         """
 
         Args:
@@ -99,7 +100,7 @@ class EpisodeRepository:
         table = self.get_air_times_table()
         table.insert({'air_time': air_time, 'id': ep_id})
 
-    def get_airtime(self, ep_id):
+    def get_air_time(self, ep_id):
         """
 
         Args:
@@ -110,7 +111,13 @@ class EpisodeRepository:
         """
         q = Query()
         table = self.get_air_times_table()
-        return table.get(q.id == ep_id)
+        episodes = table.search(q.id == ep_id)
+        shows = []
+        for episode in episodes:
+            show = self.get_show_by_id(episode['id'])
+            show.update(episode)
+            shows.append(show)
+        return shows
 
     def insert_show(self, show):
         """

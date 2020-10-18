@@ -1,4 +1,5 @@
 from datetime import datetime
+
 import dateutil.parser
 import dateutil.tz
 from dateutil.relativedelta import *
@@ -38,7 +39,7 @@ class CalendarService:
 
         if ep_id is not None:
             seed_id = ep_id
-            seed_episode = repo.get_airtime(seed_id)
+            seed_episode = repo.get_air_time(seed_id)
             seed_date = seed_episode['air_time']
 
         current_start_time = dateutil.parser.parse(seed_date)
@@ -80,7 +81,7 @@ class CalendarService:
         """
         repo = self.ep_repo
         intermission_length = self.config.get('venture', 'intermission_length_seconds')
-        repo.set_airtime(show['id'], current_start_time.isoformat())
+        repo.set_air_time(show['id'], current_start_time.isoformat())
         next_start_time = current_start_time + relativedelta(seconds=+intermission_length)
         next_start_time = next_start_time + relativedelta(minutes=+show['duration'])
         return next_start_time
@@ -94,7 +95,13 @@ class CalendarService:
         self.ep_repo.get_air_times_table().truncate()
         print('air times have been cleared')
 
-    def get_current_episode(self):
+    def view_current_episode(self):
+        """
+        Filters the currently loaded shows and air times and displays the episode scheduled
+        to air at the time the command was executed.
+        Returns:
+
+        """
         repo = self.ep_repo
         shows = self.ep_repo.get_upcoming_schedule()
         for show in shows:
@@ -104,10 +111,32 @@ class CalendarService:
             now = datetime.now()
 
             if now > air_time and now < end_time:
-                print(episode)
-                air_time.replace(tzinfo=self.nztz)
-                print("air time (NZST): " + air_time.isoformat())
-                print('PDT: ' + air_time.astimezone(self.pdt).isoformat())
-                print('EST: ' + air_time.astimezone(self.est).isoformat())
+                episode.update(show)
+                self.print_episode(episode)
 
             # print(air_time)
+
+    def view_episode_air_times(self, ep_id):
+        """
+        Takes an episode ID, and shows the airtime information bases
+        on the loaded shows and air time schedule.
+        Args:
+            ep_id: [season]-[episode]
+
+        Returns:
+
+        """
+        repo = self.ep_repo
+        episodes = repo.get_air_time(ep_id)
+
+        for episode in episodes:
+            self.print_episode(episode)
+
+    def print_episode(self, episode):
+        air_time = datetime.fromisoformat(episode['air_time'])
+        print(episode['id'] + " " + episode['title'])
+        print("runtime: " + str(episode['duration']) + " min")
+        air_time.replace(tzinfo=self.nztz)
+        print("NZT): " + air_time.isoformat())
+        print('PDT: ' + air_time.astimezone(self.pdt).isoformat())
+        print('EST: ' + air_time.astimezone(self.est).isoformat())
