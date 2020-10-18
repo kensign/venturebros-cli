@@ -16,7 +16,6 @@ CONFIG['venture']['schedule_seed_date'] = '2020-10-18T13:00:00.676957'
 CONFIG['venture']['schedule_seed_episode'] = '4-5'
 CONFIG['venture']['debug'] = True
 
-
 # handlers for hooks, build dependencies, do DI
 def inject_episode_repository(app):
     app.extend('ep_repo', EpisodeRepository(app))
@@ -67,7 +66,6 @@ class venture(App):
             Base,
             Episodes
         ]
-
 
 class ventureTest(TestApp, venture):
     """A sub-class of venture that is better suited for testing."""
