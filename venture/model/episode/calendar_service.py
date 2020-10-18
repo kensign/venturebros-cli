@@ -1,3 +1,5 @@
+from datetime import datetime
+
 import dateutil.parser
 from dateutil.relativedelta import *
 
@@ -60,8 +62,6 @@ class CalendarService:
                 for show in shows:
                     current_start_time = self.save_air_time(current_start_time, show)
 
-        # print(repo.get_upcoming_schedule())
-
     def save_air_time(self, current_start_time, show):
         """
         Saves an air time for an episode and calculates the timestamp for the next episode's air time
@@ -86,5 +86,20 @@ class CalendarService:
         Returns:
 
         """
-        self.ep_repo.get_air_times_table.truncate()
+        self.ep_repo.get_air_times_table().truncate()
         print('air times have been cleared')
+
+    def get_current_episode(self):
+        repo = self.ep_repo
+        shows = self.ep_repo.get_upcoming_schedule()
+        for show in shows:
+            air_time = datetime.fromisoformat(show['air_time'])
+            episode = repo.get_show_by_id(show['id'])
+            end_time = air_time + relativedelta(minutes=+ episode['duration'])
+            now = datetime.now()
+
+            if now > air_time and now < end_time:
+                print(episode)
+                print("started on:" + air_time.isoformat())
+
+            # print(air_time)

@@ -12,7 +12,7 @@ CONFIG = init_defaults('venture')
 CONFIG['venture']['db_file'] = '~/.venture/db.json'
 CONFIG['venture']['episode_source_file'] = './venture/data/vb.csv'
 CONFIG['venture']['intermission_length_seconds'] = 60
-CONFIG['venture']['schedule_seed_date'] = '2020-10-18T13:00:10.676957'
+CONFIG['venture']['schedule_seed_date'] = '2020-10-18T13:00:00.676957'
 CONFIG['venture']['schedule_seed_episode'] = '4-5'
 CONFIG['venture']['debug'] = True
 

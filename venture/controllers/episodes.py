@@ -36,7 +36,6 @@ class Episodes(Controller):
                 'action': 'store',
                 'dest': 'show_all'
             })
-
         ],
     )
     def list(self):
@@ -87,19 +86,20 @@ class Episodes(Controller):
 
     @ex(help=('reports the currently streaming episode'))
     def now(self):
-        pass
+        print('current episode')
+        self.app.ep_calendar.get_current_episode()
 
     @ex(help=('reports the episode up next in the streaming queue'))
     def next(self):
-        pass
+        print('next episode')
 
     @ex(help=('reports the previous episide in the queue'))
     def last(self):
-        pass
+        print('previous episode')
 
     @ex(help=('reports what episode will be playing at a given day and time'))
     def when(self):
-        pass
+        print('when a given show will air')
 
     @ex(
         help=('Provide an episode id and time to synchronise the application with the AS stream'),
@@ -112,7 +112,6 @@ class Episodes(Controller):
              {'help': 'ISO timestamp that marks the beginning of the related episode. Ex: 2020-10-15T22:55:02.291090',
               'action': 'store',
               'dest': 'start_time'}),
-
             (['--now'],
              {'help': 'use the current local time as the ISO timestamp for the show\'s start time',
               'action': 'store',
@@ -132,7 +131,7 @@ class Episodes(Controller):
         if self.app.pargs.now == 'true':
             start_time = datetime.datetime.now().isoformat()
 
-        self.app.ep_repo.get_air_times_table().truncate()
+        self.app.ep_calendar.reset()
         self.app.ep_repo.set_airtime(id, start_time)
         self.app.ep_calendar.build_schedule(7, id)
         print(self.app.ep_repo.get_airtime(id))
@@ -153,18 +152,35 @@ class Episodes(Controller):
              {'help': 'The number of days to build the schedule for. ',
               'action': 'store',
               'dest': 'days'}),
+            (['--list'],
+             {'help': 'Print the currently generated schedule ',
+              'dest': 'list'}),
+
         ],
     )
     def schedule(self):
         """
+        Create the schedule for a number of days, based off an existing air time or the config. Defaults to config if no id is
+        specified.
 
         Returns:
 
         """
-        if self.app.pargs.id == None:
-            self.app.ep_repo.get_air_times_table().truncate()
+        if self.app.pargs.id == None and self.app.pargs.list is None:
+            self.app.ep_calendar.reset()
 
-        self.app.ep_calendar.build_schedule(self.app.pargs.days, self.app.pargs.id)
+        if self.app.pargs.list is not None:
+            self.print_schedule()
+            return
+
+        if self.app.pargs.days is not None:
+            self.app.ep_calendar.build_schedule(self.app.pargs.days, self.app.pargs.id)
+            self.print_schedule()
+
+    def print_schedule(self):
+        shows = self.app.ep_repo.get_upcoming_schedule()
+        for show in shows:
+            print(show)
 
     # self.app.log.info('start index:', start_index)
 

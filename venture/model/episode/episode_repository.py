@@ -79,7 +79,7 @@ class EpisodeRepository:
             episode = ep_id.split('-')[1]
 
         return {
-            'ep_id': ep_id,
+            'id': ep_id,
             'season': int(season),
             'episode': int(episode),
             'title': title,
