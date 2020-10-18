@@ -137,6 +137,6 @@ class CalendarService:
         print(episode['id'] + " " + episode['title'])
         print("runtime: " + str(episode['duration']) + " min")
         air_time.replace(tzinfo=self.nztz)
-        print("NZT): " + air_time.isoformat())
+        print("NZT: " + air_time.isoformat())
         print('PDT: ' + air_time.astimezone(self.pdt).isoformat())
         print('EST: ' + air_time.astimezone(self.est).isoformat())
