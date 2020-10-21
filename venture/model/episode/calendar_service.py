@@ -40,7 +40,7 @@ class CalendarService:
         if ep_id is not None:
             seed_id = ep_id
             seed_episode = repo.get_air_time(seed_id)
-            seed_date = seed_episode['air_time']
+            seed_date = seed_episode[0]['air_time']
 
         current_start_time = dateutil.parser.parse(seed_date)
 
@@ -81,9 +81,10 @@ class CalendarService:
         """
         repo = self.ep_repo
         intermission_length = self.config.get('venture', 'intermission_length_seconds')
+        show_time = show['duration'].split(':')
         repo.set_air_time(show['id'], current_start_time.isoformat())
-        next_start_time = current_start_time + relativedelta(seconds=+intermission_length)
-        next_start_time = next_start_time + relativedelta(minutes=+show['duration'])
+        next_start_time = current_start_time + relativedelta(minutes=+int(show_time[0]), seconds=+int(show_time[1]))
+        next_start_time = next_start_time  + relativedelta(seconds=+intermission_length)
         return next_start_time
 
     def reset(self):
@@ -107,7 +108,8 @@ class CalendarService:
         for show in shows:
             air_time = datetime.fromisoformat(show['air_time'])
             episode = repo.get_show_by_id(show['id'])
-            end_time = air_time + relativedelta(minutes=+ episode['duration'])
+            show_time = episode['duration'].split(':')
+            end_time = air_time + relativedelta(minutes=+int(show_time[0]), seconds=+int(show_time[1]))
             now = datetime.now()
 
             if now > air_time and now < end_time:

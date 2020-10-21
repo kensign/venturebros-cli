@@ -97,6 +97,10 @@ class Episodes(Controller):
     def last(self):
         print('previous episode')
 
+    @ex(help=('resets the calandar'))
+    def reset(self):
+        self.app.ep_calendar.reset()
+
     @ex(
         help=('reports when an give episode will be playing at a given day and time'),
         arguments=[
@@ -142,7 +146,7 @@ class Episodes(Controller):
 
         self.app.ep_calendar.reset()
         self.app.ep_repo.set_air_time(id, start_time)
-        self.app.ep_calendar.build_schedule(7, id)
+        # self.app.ep_calendar.build_schedule(7, id)
         print(self.app.ep_repo.get_air_time(id))
 
     @ex(help=('initialise db'))

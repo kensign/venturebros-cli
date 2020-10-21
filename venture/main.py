@@ -10,10 +10,10 @@ from .core.exc import ventureError
 # configuration defaults
 CONFIG = init_defaults('venture')
 CONFIG['venture']['db_file'] = '~/.venture/db.json'
-CONFIG['venture']['episode_source_file'] = './venture/data/vb.csv'
+CONFIG['venture']['episode_source_file'] = './venture/data/vb-data.csv'
 CONFIG['venture']['intermission_length_seconds'] = 60
-CONFIG['venture']['schedule_seed_date'] = '2020-10-18T13:00:00.676957'
-CONFIG['venture']['schedule_seed_episode'] = '4-5'
+CONFIG['venture']['schedule_seed_date'] = '2020-10-21T20:52:50.563245'
+CONFIG['venture']['schedule_seed_episode'] = '6-5'
 CONFIG['venture']['debug'] = True
 
 # handlers for hooks, build dependencies, do DI

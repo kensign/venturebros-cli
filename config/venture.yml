@@ -22,13 +22,13 @@ venture:
 # output_handler: jinja2
 
 ### The csv file containing the episode catalogue
-# episode_source_file: './data/vb.csv'
+# episode_source_file: './data/vb-data.csv'
 
 ### Database file path
 # db_file: ~/.venture/db.json
 
 ### Episode CSV file path
-# episode_source_file: './venture/data/vb.csv'
+# episode_source_file: './venture/data/vb-data.csv'
 
 ### Intermission length in minutes
 # intermission_length_minutes: 0.5

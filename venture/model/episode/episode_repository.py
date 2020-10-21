@@ -54,15 +54,15 @@ class EpisodeRepository:
                 show = row[0].split('-')
                 season = show[0]
                 episode = show[1]
-                duration = int(row[1])
-                title = row[2]
+                duration = row[2]
+                title = row[1]
                 show = EpisodeRepository.get_show_dict(season, episode, title, duration, ep_id)
                 self.insert_show(show)
                 print('id:{4}, season: {0}, episode: {1}, duration: {3} - {2}'.format(season, episode, title, duration,
                                                                                       ep_id))
 
     @staticmethod
-    def get_show_dict(season="", episode="", title="", duration=0, ep_id=""):
+    def get_show_dict(season='', episode='', title='', duration='', ep_id=''):
         """
 
         Args:
@@ -84,7 +84,7 @@ class EpisodeRepository:
             'season': int(season),
             'episode': int(episode),
             'title': title,
-            'duration': int(duration),
+            'duration': duration,
         }
 
     def set_air_time(self, ep_id, air_time):
