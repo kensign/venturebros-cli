@@ -1,9 +1,9 @@
 from datetime import datetime
-
+import time
 import dateutil.parser
 import dateutil.tz
 from dateutil.relativedelta import *
-
+import isodate.isoduration
 
 class CalendarService:
     """Service for airtime schedule and calendar operations"""
@@ -81,9 +81,10 @@ class CalendarService:
         """
         repo = self.ep_repo
         intermission_length = self.config.get('venture', 'intermission_length_seconds')
-        show_time = show['duration'].split(':')
+        # show_time = show['duration'].split(':')
         repo.set_air_time(show['id'], current_start_time.isoformat())
-        next_start_time = current_start_time + relativedelta(minutes=+int(show_time[0]), seconds=+int(show_time[1]))
+        duration = isodate.isoduration.parse_duration(show['duration'])
+        next_start_time = current_start_time + relativedelta(seconds=+duration.total_seconds())
         next_start_time = next_start_time  + relativedelta(seconds=+intermission_length)
         return next_start_time
 
@@ -108,8 +109,8 @@ class CalendarService:
         for show in shows:
             air_time = datetime.fromisoformat(show['air_time'])
             episode = repo.get_show_by_id(show['id'])
-            show_time = episode['duration'].split(':')
-            end_time = air_time + relativedelta(minutes=+int(show_time[0]), seconds=+int(show_time[1]))
+            show_time = isodate.parse_duration(episode['duration'])
+            end_time = air_time + relativedelta(seconds=+show_time.total_seconds())
             now = datetime.now()
 
             if now > air_time and now < end_time:
@@ -136,8 +137,9 @@ class CalendarService:
 
     def print_episode(self, episode):
         air_time = datetime.fromisoformat(episode['air_time'])
+        duration = isodate.parse_duration(episode['duration'])
         print(episode['id'] + ' ' + episode['title'])
-        print('runtime: ' + str(episode['duration']) + ' min')
+        print('runtime: ' + time.strftime('%H:%M:%S', time.gmtime(duration.total_seconds())))
         air_time.replace(tzinfo=self.nztz)
         print('NZT: ' + air_time.isoformat())
         print('PDT: ' + air_time.astimezone(self.pdt).isoformat())

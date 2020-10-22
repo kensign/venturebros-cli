@@ -4,3 +4,5 @@ pyyaml
 colorlog
 tinydb
 python-dateutil
+youtube-search-python
+isodate

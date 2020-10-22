@@ -54,8 +54,8 @@ class EpisodeRepository:
                 show = row[0].split('-')
                 season = show[0]
                 episode = show[1]
-                duration = row[2]
-                title = row[1]
+                duration = row[1]
+                title = row[2]
                 show = EpisodeRepository.get_show_dict(season, episode, title, duration, ep_id)
                 self.insert_show(show)
                 print('id:{4}, season: {0}, episode: {1}, duration: {3} - {2}'.format(season, episode, title, duration,
