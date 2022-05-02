@@ -63,7 +63,7 @@
 5-6,PT22M30S,"Momma's Boys"
 5-7,PT22M37S,"Bot Seeks Bot"
 5-8,PT22M37S,"The Devil's Grip"
-6-0,PT47M18S,"All This and Gargantua-2"
+6-0,PT55M55S,"All This and Gargantua-2"
 6-1,PT23M6S,"Hostile Makeover"
 6-2,PT22M38S,"Maybe No Go"
 6-3,PT22M35S,"Faking Miracles"

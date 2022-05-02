@@ -116,6 +116,7 @@ class CalendarService:
             if now > air_time and now < end_time:
                 episode.update(show)
                 self.print_episode(episode)
+                return
 
             # print(air_time)
 
@@ -138,10 +139,9 @@ class CalendarService:
     def print_episode(self, episode):
         air_time = datetime.fromisoformat(episode['air_time'])
         duration = isodate.parse_duration(episode['duration'])
+        # air_time.replace(tzinfo=self.pdt)
         print(episode['id'] + ' ' + episode['title'])
         print('runtime: ' + time.strftime('%H:%M:%S', time.gmtime(duration.total_seconds())))
-        air_time.replace(tzinfo=self.nztz)
-        print('NZT: ' + air_time.isoformat())
         print('PDT: ' + air_time.astimezone(self.pdt).isoformat())
         print('EST: ' + air_time.astimezone(self.est).isoformat())
         print('\n')

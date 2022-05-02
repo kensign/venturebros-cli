@@ -12,8 +12,8 @@ CONFIG = init_defaults('venture')
 CONFIG['venture']['db_file'] = '~/.venture/db.json'
 CONFIG['venture']['episode_source_file'] = './venture/data/vb-yt-data.txt'
 CONFIG['venture']['intermission_length_seconds'] = 60
-CONFIG['venture']['schedule_seed_date'] = '2020-10-22T20:05:25.372288'
-CONFIG['venture']['schedule_seed_episode'] = '4-6'
+CONFIG['venture']['schedule_seed_date'] = '2020-10-24T08:16:12.438867'
+CONFIG['venture']['schedule_seed_episode'] = '4-11'
 CONFIG['venture']['debug'] = True
 
 # handlers for hooks, build dependencies, do DI
